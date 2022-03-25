@@ -1,7 +1,7 @@
 DECLARE @startDate DATE = '2020-07-01'
 DECLARE @endDate DATE = '2021-12-31';
 
-WITH			ORSpecialty AS (		
+WITH			ORProvider AS (		
 SELECT			sc.HospitalAccount ,	
                 	sc.Prov_ID_Legacy ,	
 			sum(cast(sc.ORTIME as float)) ORTime ,	
@@ -10,10 +10,10 @@ FROM			DSS..SurgCases sc
 group by		sc.HospitalAccount ,			
 			sc.Prov_ID_Legacy)	
 
-,			PrimSpec AS (	
+,			PrimProv AS (	
 SELECT			*		
-FROM			ORSpecialty		
-WHERE			ORSpecialty.Row# = 1)	
+FROM			ORProvider		
+WHERE			ORProvider.Row# = 1)	
 
 SELECT			enc.EncounterID ,	
 			enc.PatientType	,
@@ -40,7 +40,7 @@ SELECT			enc.EncounterID ,
 FROM			T_IP_ENCOUNTER enc		
 INNER JOIN      	DSS..DATE dt
                     		on enc.DischargeDate = dt.date
-INNER JOIN		PrimSpec ps			
+INNER JOIN		PrimProv ps			
 				ON enc.PatientAccount = ps.HospitalAccount
 LEFT JOIN		T_UDF_DESCRIPTION_8 udf			
 				on enc.UserField2 = udf.Code
